@@ -1,5 +1,5 @@
 # VLC22 Video Playlist App
-
+CLICK EDIT  TO SEE THE TEXT FORMAT
 A modern, user-friendly Expo React Native app for managing and playing video playlists.  
 Built for smooth performance, beautiful UI, and a polished mobile experience — fully compatible with Expo Go.
 
@@ -74,7 +74,8 @@ Global state management for real-time sync between tabs.
 Improved error handling and type safety.
 Light/Dark mode toggle.
 
-
+  CLICK EDIT READ ME FILE TO FIX THE TEXT FORMAT
+  
    
 ```sh
 git clone [https://github.com/Armahkyek22/vlc22.git](https://github.com/Armahkyek22/vlc22.git)
