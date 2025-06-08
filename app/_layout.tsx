@@ -17,8 +17,18 @@ export default function Layout() {
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: '#F44BF8',
-        tabBarInactiveTintColor: '#FFFFFF',
-        tabBarStyle: { backgroundColor: '#111017' },
+        tabBarInactiveTintColor: '#aaa',
+        tabBarStyle: {
+          backgroundColor: '#18151f',      // Deep dark background
+          borderTopWidth: 0,               // No default border
+          height: 90,                      // Standard height
+          // Subtle shadow for depth (optional)
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -2 },
+          shadowOpacity: 0.08,
+          shadowRadius: 8,
+          elevation: 4,
+        },
         headerShown: false,
       })}
     >
