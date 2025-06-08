@@ -1,29 +1,32 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { Ionicons } from '@expo/vector-icons';
+import { Tabs } from 'expo-router';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
-  }
-
+export default function Layout() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Tabs
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color, size }) => {
+          let iconName: keyof typeof Ionicons.glyphMap = 'ellipse-outline';
+          switch (route.name) {
+            case '(tabs)/index': iconName = 'videocam'; break;
+            case '(tabs)/audio': iconName = 'musical-notes'; break;
+            case '(tabs)/browse': iconName = 'folder'; break;
+            case '(tabs)/playlist': iconName = 'list'; break;
+            case '(tabs)/more': iconName = 'ellipsis-horizontal'; break;
+          }
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: '#F44BF8',
+        tabBarInactiveTintColor: '#FFFFFF',
+        tabBarStyle: { backgroundColor: '#111017' },
+        headerShown: false,
+      })}
+    >
+      <Tabs.Screen name="(tabs)/index" options={{ title: 'Video' }} />
+      <Tabs.Screen name="(tabs)/audio" options={{ title: 'Audio' }} />
+      <Tabs.Screen name="(tabs)/browse" options={{ title: 'Browse' }} />
+      <Tabs.Screen name="(tabs)/playlist" options={{ title: 'Playlists' }} />
+      <Tabs.Screen name="(tabs)/more" options={{ title: 'More' }} />
+    </Tabs>
   );
 }
