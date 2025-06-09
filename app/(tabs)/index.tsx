@@ -512,21 +512,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 16,
-    height: 60,
-    backgroundColor: '#18151f',
+    height: 55,
+    backgroundColor: 'transparent',
     elevation: 4, // adds shadow on Android
     shadowColor: '#000', // iOS shadow
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.09,
-    shadowRadius: 8,
-    zIndex: 1,
+    shadowOpacity: 0.9,
+    shadowRadius: 20,
+    zIndex: 10,
     position: 'relative',
+    opacity: 0.9,
+    borderBottomColor : 'rgba(255,255,255,0.1)',
+    borderBottomWidth : 1,
+    overflow : 'hidden',
+  
   },
   appName: { color: THEME.text, fontSize: 20, fontWeight: 'bold', flex: 1, textAlign: 'left', paddingLeft: 16},
  
   iconButton: {  marginHorizontal: 20},
   
-  grid: { padding: 16 },
+  grid: { 
+    padding: 8, 
+    paddingBottom: 150, // Match this with the FAB's bottom position
+  },
   videoItem: {
     flex: 1,
     backgroundColor: 'transparent',
@@ -537,7 +545,7 @@ const styles = StyleSheet.create({
     minHeight: 0,
     // Card shadow for iOS
     shadowColor: '#000',
-    shadowOpacity: 0.18,
+    shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 12,
     // Elevation for Android
@@ -555,16 +563,16 @@ const styles = StyleSheet.create({
   cardContainer: {
     width: '100%',
     aspectRatio: 1,
-    borderRadius: 20, // Increased for modern look
+    borderRadius: 18, // Increased for modern look
     overflow: 'hidden',
     position: 'relative',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)', // Semi-transparent
+    backgroundColor: 'rgba(255, 255, 255, 0.05)', // Semi-transparent
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: THEME.background,
     // Enhanced shadows
-    shadowColor: '#000',
-    shadowOpacity: 0.25,
+    shadowColor: '#f44bf8',
+    shadowOpacity: 0.5,
     shadowOffset: { width: 0, height: 8 },
     shadowRadius: 16,
     elevation: 8,
@@ -598,7 +606,7 @@ const styles = StyleSheet.create({
   },
   videoTitle: {
     color: THEME.text,
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: 'bold',
     marginBottom: 2,
   },
@@ -617,7 +625,7 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     right: 24,
-    bottom: 36,
+    bottom: 100,
     width: 56,
     height: 56,
     alignItems: 'center',
@@ -709,13 +717,14 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    backgroundColor: '#222',
+    backgroundColor: '#333',
     color: THEME.text,
     borderRadius: 8,
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
     fontSize: 16,
     height: 40,
-    marginRight: 8,
+    marginRight: 2,
+   marginLeft: 20,
   },
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,

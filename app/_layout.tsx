@@ -16,18 +16,23 @@ export default function Layout() {
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#F44BF8',
+        tabBarActiveTintColor: '#f44bf8',
         tabBarInactiveTintColor: '#aaa',
-        tabBarStyle: {
-          backgroundColor: '#18151f',      // Deep dark background
-          borderTopWidth: 0,               // No default border
-          height: 90,                      // Standard height
-          // Subtle shadow for depth (optional)
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: -2 },
-          shadowOpacity: 0.08,
-          shadowRadius: 8,
-          elevation: 4,
+        tabBarStyle: {  backgroundColor: 'rgba(24, 21, 31, 0.85)', // Added alpha channel for transparency
+          height: 90,
+          position: 'absolute',
+          borderTopWidth: 0,
+          shadowColor: '#f44bf8',
+          shadowOffset: { width: 0, height: 0},
+          shadowOpacity: 0.6,
+          shadowRadius: 30,
+          elevation: 3,
+          borderTopLeftRadius: 0,   // Optional: Rounded top corners
+          borderTopRightRadius: 0,  // Optional: Rounded top corners
+          overflow: 'hidden',
+          borderWidth: 0,            // Ensure no border
+          paddingBottom: 0,
+       
         },
         headerShown: false,
       })}
