@@ -18,12 +18,7 @@ import {
 } from 'react-native';
 import Toast from 'react-native-root-toast';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-const THEME = {
-  background: '#111017',
-  accent: '#F44BF8',
-  text: '#FFFFFF',
-};
+import useThemeStore from '../../store/theme';
 
 const PLAYLISTS_KEY = 'VIDEO_LIBRARY_PLAYLISTS';
 const VIDEOS_KEY = 'VIDEO_LIBRARY_VIDEOS';
@@ -58,6 +53,7 @@ function showToast(message: string, duration: number = 2000) {
 }
 
 export default function PlaylistTab() {
+  const { themeColors } = useThemeStore();
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [videos, setVideos] = useState<VideoItem[]>([]);
   const [createModalVisible, setCreateModalVisible] = useState(false);
@@ -220,14 +216,14 @@ export default function PlaylistTab() {
   // Render each playlist in the list
   const renderPlaylist = ({ item }: { item: Playlist }) => (
     <TouchableOpacity
-      style={styles.playlistCard}
+      style={[styles.playlistCard, { backgroundColor: themeColors.sectionBackground }]}
       onPress={() => openPlaylistVideos(item)}
       activeOpacity={0.85}
     >
-      <Ionicons name="albums" size={32} color={THEME.accent} style={{ marginRight: 16 }} />
+      <Ionicons name="albums" size={32} color={themeColors.primary} style={{ marginRight: 16 }} />
       <View style={{ flex: 1 }}>
-        <Text style={styles.playlistName} numberOfLines={1}>{item.name}</Text>
-        <Text style={styles.playlistCount}>{item.videoIds.length} videos</Text>
+        <Text style={[styles.playlistName, { color: themeColors.text }]} numberOfLines={1}>{item.name}</Text>
+        <Text style={[styles.playlistCount, { color: themeColors.tabIconColor }]}>{item.videoIds.length} videos</Text>
       </View>
       <TouchableOpacity
         onPress={() => {
@@ -237,7 +233,7 @@ export default function PlaylistTab() {
         }}
         style={styles.iconButton}
       >
-        <Ionicons name="create-outline" size={22} color={THEME.text} />
+        <Ionicons name="create-outline" size={22} color={themeColors.text} />
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => handleDeletePlaylist(item)}
@@ -252,7 +248,11 @@ export default function PlaylistTab() {
   const renderPlaylistVideo = ({ item }: { item: VideoItem }) => {
     const selected = selectedVideos.includes(item.id);
     return (
-      <View style={[styles.playlistVideoCard, selected && { borderColor: THEME.accent, borderWidth: 2 }]}>
+      <View style={[
+        styles.playlistVideoCard,
+        { borderColor: selected ? themeColors.primary : themeColors.sectionBackground },
+        selected && { borderWidth: 2 }
+      ]}>
         <TouchableOpacity
           style={styles.playlistVideoThumbContainer}
           onPress={() => {
@@ -277,22 +277,24 @@ export default function PlaylistTab() {
             isMuted
           />
           <View style={styles.playlistVideoOverlay}>
-            <Text style={styles.playlistVideoTitle} numberOfLines={1}>
+            <Text style={[styles.playlistVideoTitle, { color: themeColors.text }]} numberOfLines={1}>
               {item.name}
             </Text>
-            <Text style={styles.playlistVideoDuration}>{item.duration}</Text>
+            <Text style={[styles.playlistVideoDuration, { color: themeColors.primary }]}>
+              {item.duration}
+            </Text>
           </View>
           <Ionicons
             name="play-circle"
             size={36}
-            color={THEME.accent}
+            color={themeColors.primary}
             style={styles.playlistVideoPlayIcon}
           />
           {selectMode && (
             <Ionicons
               name={selected ? "checkbox" : "square-outline"}
               size={26}
-              color={THEME.accent}
+              color={themeColors.primary}
               style={styles.bulkCheckbox}
             />
           )}
@@ -311,27 +313,25 @@ export default function PlaylistTab() {
 
   return (
     <LinearGradient
-    colors={[
-      '#18151f', // Almost black (top)
-      '#232136', // Deep muted purple
-      '#23243a', // Deep blue-purple (mid)
-      '#29213a', // Slightly lighter but still dark (lower mid)
-      '#16131d', // Near-black (bottom)
-    ]}
-    style={{ flex: 1 }}
-    start={{ x: 0, y: 0 }}
-    end={{ x: 1, y: 1 }}
-  >
-    <SafeAreaView style={styles.container}>
+      colors={[
+        themeColors.background,
+        themeColors.sectionBackground,
+        themeColors.background
+      ]}
+      style={{ flex: 1 }}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+    >
+      <SafeAreaView style={[styles.container, { backgroundColor: themeColors.background }]}>
         {/* Top Bar */}
         <View style={styles.topBar}>
-          <Text style={styles.appName}>Playlists</Text>
+          <Text style={[styles.appName, { color: themeColors.primary, fontSize: 30, fontWeight: 'bold' }]}>Playlists</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <TouchableOpacity
               style={styles.iconButton}
               onPress={() => setCreateModalVisible(true)}
             >
-              <Ionicons name="add" size={28} color={THEME.accent} />
+              <Ionicons name="add" size={28} color={themeColors.primary} />
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.iconButton}
@@ -339,19 +339,19 @@ export default function PlaylistTab() {
                 sortMode === 'name' ? 'date' : sortMode === 'date' ? 'count' : 'name'
               )}
             >
-              <Ionicons name="funnel" size={24} color={THEME.text} />
+              <Ionicons name="filter" size={24} color={themeColors.text} />
             </TouchableOpacity>
           </View>
         </View>
         {/* Search Bar */}
-        <View style={styles.searchBar}>
-          <Ionicons name="search" size={20} color="#888" style={{ marginHorizontal: 6 }} />
+        <View style={[styles.searchBar, { backgroundColor: themeColors.sectionBackground }]}>
+          <Ionicons name="search" size={20} color={themeColors.tabIconColor} style={{ marginHorizontal: 6 }} />
           <TextInput
-            style={styles.searchInput}
+            style={[styles.searchInput, { color: themeColors.text }]}
             value={playlistSearch}
             onChangeText={setPlaylistSearch}
             placeholder="Search playlists..."
-            placeholderTextColor="#888"
+            placeholderTextColor={themeColors.tabIconColor}
           />
         </View>
         {/* Playlist List */}
@@ -362,9 +362,9 @@ export default function PlaylistTab() {
           contentContainerStyle={styles.playlistList}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <Ionicons name="folder-open" size={72} color= {THEME.accent} style={{ marginBottom:16 }} />
-              <Text style={styles.emptyText}>No Playlists Yet</Text>
-              <Text style={styles.emptyFooterText}>Tap the + button to create one</Text>
+              <Ionicons name="folder-open-outline" size={82} color={themeColors.primary} style={{ marginTop: '50%' }} />
+              <Text style={[styles.emptyText, { color: themeColors.text, fontSize: 25, fontWeight: 'bold' }]}>No Playlists Yet</Text>
+              <Text style={[styles.emptyFooterText, { color: themeColors.primary, fontSize: 17, marginTop: 6 }]}>Tap the + button to create one</Text>
             </View>
           }
         />
@@ -380,30 +380,30 @@ export default function PlaylistTab() {
             <View style={styles.modalOverlay} />
           </TouchableWithoutFeedback>
           <SafeAreaView style={styles.safeModalContainer}>
-            <View style={styles.modalInner}>
-              <Text style={styles.modalTitle}>Create Playlist</Text>
+            <View style={[styles.modalInner, { backgroundColor: themeColors.sectionBackground }]}>
+              <Text style={[styles.modalTitle, { color: themeColors.text }]}>Create Playlist</Text>
               <TextInput
-                style={styles.modalInput}
+                style={[styles.modalInput, { color: themeColors.text, borderColor: themeColors.primary }]}
                 value={newPlaylistName}
                 onChangeText={setNewPlaylistName}
                 placeholder="Playlist name"
-                placeholderTextColor="#888"
+                placeholderTextColor={themeColors.tabIconColor}
                 autoFocus
                 onSubmitEditing={handleCreatePlaylist}
                 returnKeyType="done"
               />
               <View style={styles.modalButtons}>
                 <TouchableOpacity
-                  style={styles.modalButton}
+                  style={[styles.modalButton, { backgroundColor: themeColors.tabIconColor }]}
                   onPress={() => setCreateModalVisible(false)}
                 >
-                  <Text style={styles.modalButtonText}>Cancel</Text>
+                  <Text style={[styles.modalButtonText, { color: themeColors.text }]}>Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={[styles.modalButton, { backgroundColor: THEME.accent }]}
+                  style={[styles.modalButton, { backgroundColor: themeColors.primary }]}
                   onPress={handleCreatePlaylist}
                 >
-                  <Text style={[styles.modalButtonText, { color: '#111017' }]}>Create</Text>
+                  <Text style={[styles.modalButtonText, { color: themeColors.text }]}>Create</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -421,30 +421,30 @@ export default function PlaylistTab() {
             <View style={styles.modalOverlay} />
           </TouchableWithoutFeedback>
           <SafeAreaView style={styles.safeModalContainer}>
-            <View style={styles.modalInner}>
-              <Text style={styles.modalTitle}>Rename Playlist</Text>
+            <View style={[styles.modalInner, { backgroundColor: themeColors.sectionBackground }]}>
+              <Text style={[styles.modalTitle, { color: themeColors.text }]}>Rename Playlist</Text>
               <TextInput
-                style={styles.modalInput}
+                style={[styles.modalInput, { color: themeColors.text, borderColor: themeColors.primary }]}
                 value={renamePlaylistName}
                 onChangeText={setRenamePlaylistName}
-                placeholder="New playlist name"
-                placeholderTextColor="#888"
+                placeholder="Playlist name"
+                placeholderTextColor={themeColors.tabIconColor}
                 autoFocus
                 onSubmitEditing={handleRenamePlaylist}
                 returnKeyType="done"
               />
               <View style={styles.modalButtons}>
                 <TouchableOpacity
-                  style={styles.modalButton}
+                  style={[styles.modalButton, { backgroundColor: themeColors.tabIconColor }]}
                   onPress={() => setRenameModalVisible(false)}
                 >
-                  <Text style={styles.modalButtonText}>Cancel</Text>
+                  <Text style={[styles.modalButtonText, { color: themeColors.text }]}>Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={[styles.modalButton, { backgroundColor: THEME.accent }]}
+                  style={[styles.modalButton, { backgroundColor: themeColors.primary }]}
                   onPress={handleRenamePlaylist}
                 >
-                  <Text style={[styles.modalButtonText, { color: '#111017' }]}>Rename</Text>
+                  <Text style={[styles.modalButtonText, { color: themeColors.text }]}>Rename</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -455,371 +455,242 @@ export default function PlaylistTab() {
         <Modal
           visible={playlistVideosVisible}
           transparent
-          animationType="fade"
+          animationType="slide"
           onRequestClose={() => setPlaylistVideosVisible(false)}
         >
-          <TouchableWithoutFeedback onPress={() => {
-            setPlaylistVideosVisible(false);
-            setSelectMode(false);
-            setSelectedVideos([]);
-          }}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.modalOverlay} />
           </TouchableWithoutFeedback>
           <SafeAreaView style={styles.safeModalContainer}>
-            <View style={styles.modalInnerLarge}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
-                <Text style={styles.modalTitle}>
-                  {selectedPlaylist?.name || 'Playlist'}
-                </Text>
-                <TouchableOpacity
-                  style={{ marginLeft: 'auto' }}
-                  onPress={() => {
-                    setPlaylistVideosVisible(false);
-                    setSelectMode(false);
-                    setSelectedVideos([]);
-                  }}
-                >
-                  <Ionicons name="close" size={28} color={THEME.text} />
+            <View style={[styles.modalInner, { backgroundColor: themeColors.sectionBackground, flex: 1 }]}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+                <TouchableOpacity onPress={() => setPlaylistVideosVisible(false)}>
+                  <Ionicons name="arrow-back" size={28} color={themeColors.text} />
                 </TouchableOpacity>
-                {playlistVideos.length > 0 && (
+                <Text style={[styles.modalTitle, { color: themeColors.text, marginLeft: 12 }]}>
+                  {selectedPlaylist?.name}
+                </Text>
+                <View style={{ flex: 1 }} />
+                {selectMode && (
                   <TouchableOpacity
-                    style={{ marginLeft: 8 }}
                     onPress={() => {
-                      setSelectMode((s) => !s);
-                      setSelectedVideos([]);
+                      handleRemoveFromPlaylist(selectedVideos);
+                      setSelectMode(false);
                     }}
+                    style={{ marginRight: 8 }}
                   >
-                    <Ionicons name={selectMode ? "close" : "checkbox-outline"} size={26} color={THEME.accent} />
+                    <Ionicons name="trash" size={24} color="#FF5555" />
                   </TouchableOpacity>
                 )}
+                <TouchableOpacity
+                  onPress={() => setSelectMode(!selectMode)}
+                  style={{ marginRight: 8 }}
+                >
+                  <Ionicons name={selectMode ? "close" : "checkbox-outline"} size={24} color={themeColors.primary} />
+                </TouchableOpacity>
               </View>
-              {playlistVideos.length === 0 ? (
-                <View style={styles.emptyContainer}>
-                  <Ionicons name="videocam-off" size={56} color="#444" style={{ marginBottom: 8 }} />
-                  <Text style={styles.emptyText}>No videos in this playlist.</Text>
-                </View>
-              ) : (
-                <>
-                  {selectMode && (
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
-                      <TouchableOpacity
-                        style={[styles.modalButton, { backgroundColor: THEME.accent }]}
-                        onPress={() => handleRemoveFromPlaylist(selectedVideos)}
-                        disabled={selectedVideos.length === 0}
-                      >
-                        <Text style={[styles.modalButtonText, { color: '#111017' }]}>
-                          Remove {selectedVideos.length > 1 ? 'Videos' : 'Video'}
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  )}
-                  <FlatList
-                    data={playlistVideos}
-                    keyExtractor={(item) => item.id}
-                    renderItem={renderPlaylistVideo}
-                    numColumns={2}
-                    contentContainerStyle={styles.playlistGrid}
-                  />
-                </>
-              )}
+              <FlatList
+                data={playlistVideos}
+                keyExtractor={(item) => item.id}
+                renderItem={renderPlaylistVideo}
+                contentContainerStyle={{ paddingBottom: 20 }}
+                ListEmptyComponent={
+                  <View style={styles.emptyContainer}>
+                    <Ionicons name="videocam-off" size={72} color={themeColors.primary} style={{ marginBottom:16 }} />
+                    <Text style={[styles.emptyText, { color: themeColors.text }]}>No Videos</Text>
+                  </View>
+                }
+              />
             </View>
           </SafeAreaView>
         </Modal>
-
-        {/* Video Player Modal */}
-        <Modal
-          visible={videoPlayerVisible}
-          transparent
-          animationType="fade"
-          onRequestClose={() => setVideoPlayerVisible(false)}
-        >
-          <TouchableWithoutFeedback onPress={() => setVideoPlayerVisible(false)}>
-            <View style={styles.modalOverlay} />
-          </TouchableWithoutFeedback>
-          <SafeAreaView style={styles.safeModalContainer}>
-            <View style={styles.playerModalInner}>
-              <TouchableOpacity
-                style={{ position: 'absolute', top: 12, right: 12, zIndex: 2 }}
-                onPress={() => setVideoPlayerVisible(false)}
-              >
-                <Ionicons name="close" size={32} color={THEME.text} />
-              </TouchableOpacity>
-              {playerVideo && (
-                <Video
-                  source={{ uri: playerVideo.uri }}
-                  style={styles.playerVideo}
-                  useNativeControls
-                  resizeMode="contain"
-                  shouldPlay
-                />
-              )}
-              <Text style={styles.playerVideoTitle} numberOfLines={1}>
-                {playerVideo?.name}
-              </Text>
-            </View>
-          </SafeAreaView>
-        </Modal>
-    </SafeAreaView>
- </LinearGradient> 
-);
+      </SafeAreaView>
+    </LinearGradient>
+  );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: 'transparent', height: '100%' },
-  gradient: {
-    flex: 3,
+  container: {
+    flex: 1,
   },
   topBar: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding:3,
-    backgroundColor: 'transparent',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    zIndex: 1,
-    position: 'relative', 
-    opacity: 0.9,
-    borderBottomColor : 'rgba(255,255,255,0.1)',
-    borderBottomWidth : 1,
-    overflow : 'hidden',
-    
+    paddingHorizontal: 18,
+    paddingTop: 12,
+    paddingBottom: 8,
   },
-  appName: { color: THEME.text, fontSize: 20, fontWeight: 'bold', flex: 1, textAlign: 'left', paddingLeft: 20},
-  iconButton: { marginLeft: 12, padding: 4 },
-  playlistList: { padding: 8 },
-  playlistCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor:' rgba(24, 21, 31, 0.8)',
-    borderRadius: 15,
-    padding: 16,
-    marginBottom: 12,
-    elevation: 2,
-    shadowColor: '#f44bf8',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    position: 'relative', 
-    opacity: 0.9,
-    borderBottomWidth : 0,
-    overflow : 'visible',
-    borderColor : 'rgba(24, 21, 31, 0.1)',
-    borderWidth : 0,
-  },
-  playlistName: {
-    color: THEME.text,
-    fontSize: 16,
+  appName: {
+    fontSize: 26,
     fontWeight: 'bold',
-    marginBottom: 2,
+    letterSpacing: 1.2,
   },
-  playlistCount: {
-    color: '#aaa',
-    fontSize: 13,
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 180,
-  },
-  emptyText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: 24,
-    marginBottom: 8,
-    fontWeight: 'bold',
-  },
-  emptyFooterText: {
-    color: '#aaa',
-    textAlign: 'center',
-    fontSize: 16,
-    marginBottom: 24,
+  iconButton: {
+    padding: 6,
+    marginLeft: 4,
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#222',
-    borderRadius: 8,
-    marginHorizontal: 16,
+    marginHorizontal: 14,
     marginBottom: 8,
-    paddingHorizontal: 2,
-    paddingVertical: 5 ,
-    height: 40,
+    borderRadius: 10,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    marginTop: 2,
   },
   searchInput: {
     flex: 1,
-    color: THEME.text,
-    fontSize: 15,
-    padding: 0,
-  },
-  modalOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(40, 35, 35, 0.4)',
-  },
-  safeModalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalInner: {
-    width: '90%',
-    backgroundColor: '#222',
-    borderRadius: 12,
-    padding: 24,
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    maxWidth: 400,
-  },
-  modalInnerLarge: {
-    width: '98%',
-    maxWidth: 600,
-    backgroundColor: '#222',
-    borderRadius: 12,
-    padding: 18,
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    maxHeight: '90%',
-    alignSelf: 'center',
-  },
-  modalTitle: {
-    color: THEME.text,
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  modalInput: {
-    backgroundColor: '#333',
-    color: THEME.text,
-    borderRadius: 8,
-    padding: 12,
     fontSize: 16,
-    marginBottom: 16,
+    paddingVertical: 6,
+    paddingHorizontal: 6,
   },
-  modalButtons: {
+  playlistList: {
+    paddingHorizontal: 8,
+    paddingBottom: 12,
+  },
+  playlistCard: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    alignItems: 'center',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 8,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.10,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
   },
-  modalButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    backgroundColor: '#333',
-    marginLeft: 12,
+  playlistName: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 2,
   },
-  modalButtonText: {
-    color: THEME.text,
-    fontSize: 16,
+  playlistCount: {
+    fontSize: 13,
+    fontWeight: '400',
   },
-  // Playlist Videos Grid
-  playlistGrid: {
-    padding: 4,
+  emptyContainer: {
+    alignItems: 'center',
+    marginTop: 48,
+    marginBottom: 100,
+  },
+  emptyText: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  emptyFooterText: {
+    fontSize: 14,
+    fontWeight: '400',
   },
   playlistVideoCard: {
-    flex: 1,
-    margin: 8,
-    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 10,
+    marginBottom: 10,
     backgroundColor: 'transparent',
+    borderWidth: 1,
     overflow: 'hidden',
-    elevation: 2,
-    minWidth: 140,
-    maxWidth: '48%',
-    position: 'relative',
   },
   playlistVideoThumbContainer: {
-    position: 'relative',
-    width: '100%',
-    aspectRatio: 1,
-    borderRadius: 12,
+    flex: 1,
+    height: 90,
+    borderRadius: 10,
     overflow: 'hidden',
-    backgroundColor: '#222',
-    justifyContent: 'center',
-    alignItems: 'center',
+    position: 'relative',
+    backgroundColor: '#000',
   },
   playlistVideoThumb: {
-    ...StyleSheet.absoluteFillObject,
     width: '100%',
     height: '100%',
-    borderRadius: 12,
+    borderRadius: 10,
+    backgroundColor: '#000',
   },
   playlistVideoOverlay: {
     position: 'absolute',
-    bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(17,16,23,0.6)',
-    paddingHorizontal: 8,
-    paddingVertical: 6,
+    bottom: 0,
+    padding: 8,
+    backgroundColor: 'rgba(0,0,0,0.45)',
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
   playlistVideoTitle: {
-    color: THEME.text,
-    fontSize: 13,
-    fontWeight: 'bold',
+    fontSize: 15,
+    fontWeight: '600',
     marginBottom: 2,
   },
   playlistVideoDuration: {
-    color: THEME.accent,
-    fontSize: 11,
+    fontSize: 12,
   },
   playlistVideoPlayIcon: {
     position: 'absolute',
-    top: '40%',
-    left: '40%',
-    opacity: 0.85,
+    top: '50%',
+    left: '50%',
+    marginLeft: -18,
+    marginTop: -18,
+    opacity: 0.7,
   },
   bulkCheckbox: {
     position: 'absolute',
     top: 8,
-    left: 8,
-    backgroundColor: 'rgba(17,16,23,0.7)',
-    borderRadius: 8,
+    right: 8,
+    backgroundColor: 'rgba(0,0,0,0.15)',
+    borderRadius: 6,
     padding: 2,
-    zIndex: 2,
   },
   removeIcon: {
-    position: 'absolute',
-    top: 6,
-    right: 6,
-    zIndex: 2,
-    backgroundColor: 'rgba(17,16,23,0.6)',
-    borderRadius: 12,
+    marginLeft: 10,
     padding: 2,
   },
-  playerModalInner: {
-    width: '96%',
-    maxWidth: 500,
-    backgroundColor: '#222',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
+  modalOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.36)',
+  },
+  safeModalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  modalInner: {
+    marginHorizontal: 24,
+    borderRadius: 14,
+    padding: 20,
+    alignItems: 'stretch',
     elevation: 8,
     shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    maxHeight: '90%',
-    alignSelf: 'center',
+    shadowOpacity: 0.18,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
   },
-  playerVideo: {
-    width: '100%',
-    height: 240,
-    backgroundColor: '#000',
-    borderRadius: 12,
-    marginBottom: 14,
-  },
-  playerVideoTitle: {
-    color: THEME.text,
-    fontSize: 16,
+  modalTitle: {
+    fontSize: 20,
     fontWeight: 'bold',
-    marginTop: 6,
-    marginBottom: 2,
+    marginBottom: 16,
     textAlign: 'center',
+  },
+  modalInput: {
+    borderWidth: 1,
+    borderRadius: 8,
+    fontSize: 16,
+    padding: 10,
+    marginBottom: 16,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  modalButton: {
+    flex: 1,
+    borderRadius: 8,
+    paddingVertical: 10,
+    marginHorizontal: 4,
+    alignItems: 'center',
+  },
+  modalButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
